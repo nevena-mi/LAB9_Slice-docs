@@ -10,7 +10,7 @@ for each document type.
 
 from langchain_community.document_loaders import PyPDFLoader
 
-from src.chunking import split_text
+from src.chunking import split_text, split_text_recursive
 from src.config import PDF_PATH
 
 
@@ -20,14 +20,24 @@ TRANSCRIPT_PATH = "transcripts/podcast_transcript.txt"
 PODCAST_SETTINGS = {
     "chunk_size": 300,
     "chunk_overlap": 100,
-    "separator": "\n"
-}
+    "separator": " "
+    }
 
 PDF_SETTINGS = {
     "chunk_size": 500,
     "chunk_overlap": 100,
     "separator": "\n"
-}
+    }
+
+RECURSIVE_PODCAST_SETTINGS = {
+    "chunk_size": 300,
+    "chunk_overlap": 50
+    }
+
+RECURSIVE_PDF_SETTINGS = {
+    "chunk_size": 300,
+    "chunk_overlap": 50
+    }
 
 
 def load_transcript(path):
@@ -60,6 +70,17 @@ def print_chunk_statistics(name, chunks):
     print(f"Smallest chunk: {min(sizes)} characters")
     print(f"Largest chunk: {max(sizes)} characters")
 
+def check_chunk_endings(chunks):
+    """Calculate percentage of chunks ending at sentence boundaries."""
+
+    clean = sum(
+        1
+        for chunk in chunks
+        if chunk.strip()[-1] in ".?!"
+    )
+
+    return clean / len(chunks) * 100   
+
 
 def main():
 
@@ -75,16 +96,32 @@ def main():
     podcast_chunks = split_text(
         podcast_text,
         **PODCAST_SETTINGS
-    )
+        )
 
     pdf_chunks = split_text(
         pdf_text,
         **PDF_SETTINGS
-    )
+        )
+
+    recursive_podcast_chunks = split_text_recursive(
+        podcast_text,
+        **RECURSIVE_PODCAST_SETTINGS)
+
+    recursive_pdf_chunks = split_text_recursive(
+        pdf_text,
+        **RECURSIVE_PDF_SETTINGS)
 
 
     print_chunk_statistics("Podcast chunks", podcast_chunks)
     print_chunk_statistics("PDF chunks", pdf_chunks)
+
+    print("\nSentence boundary check")
+    print("======================")
+
+    print(
+    f"Podcast clean endings: {check_chunk_endings(podcast_chunks):.1f}%")
+
+    print(f"PDF clean endings: {check_chunk_endings(pdf_chunks):.1f}%")
 
 
     print("\nFirst podcast chunk")
@@ -105,6 +142,14 @@ def main():
 
     print("\nPDF last characters:")
     print(pdf_chunks[0][-100:])
+
+    print("\nRecursive podcast ending")
+    print("========================")
+    print(recursive_podcast_chunks[0][-100:])
+
+    print("\nRecursive PDF ending")
+    print("===================")
+    print(recursive_pdf_chunks[0][-100:])
 
 
 if __name__ == "__main__":

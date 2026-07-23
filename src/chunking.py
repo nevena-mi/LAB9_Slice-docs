@@ -2,6 +2,9 @@
 # This splitter divides a long text into smaller pieces (chunks)
 # based on the number of characters.
 from langchain_text_splitters import CharacterTextSplitter
+# add for recursive
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 
 
 # This function creates and configures a text splitter object.
@@ -30,7 +33,7 @@ def split_text(
         chunk_size=500,        # Desired chunk size
         chunk_overlap=0,       # Amount of repeated text between chunks
         separator="\n"         # Preferred splitting boundary
-):
+        ):
 
     # First create a splitter with the requested parameters.
     # Example:
@@ -40,7 +43,7 @@ def split_text(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
         separator=separator
-    )
+        )
 
 
     # Apply the splitter to the text.
@@ -51,3 +54,41 @@ def split_text(
     # Return the generated chunks so they can be inspected,
     # analyzed, embedded, or used in a retrieval system.
     return chunks
+
+# recursive splitter
+def create_recursive_splitter(
+    chunk_size=500,
+    chunk_overlap=100,
+    separators=None):
+    """
+    Create a RecursiveCharacterTextSplitter.
+
+    The splitter tries each separator in order.
+    If a chunk is still too large, it tries the next separator.
+    """
+
+    if separators is None:
+        separators = ["\n\n","\n",". "," ",""]
+
+    return RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=separators)
+
+
+def split_text_recursive(
+        text,
+        chunk_size=500,
+        chunk_overlap=100,
+        separators=None):
+    """
+    Split text using RecursiveCharacterTextSplitter.
+    """
+
+    splitter = create_recursive_splitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        separators=separators
+    )
+
+    return splitter.split_text(text)
