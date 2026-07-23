@@ -1,5 +1,77 @@
+## Chunking Strategy Recommendations
 
-1. created chunks after hours. swiching from notebook to .py, and the restructuring completely. deleted all evidences, new will come
+### For PDF Documents
+
+**Recommended Strategy:** Recursive Character Chunking
+
+**Reasoning:**
+- Preserves paragraph and section boundaries better than fixed-size chunking.
+- Produces consistent chunk sizes while maintaining document structure.
+- Works well with long structured documents.
+
+**Recommended parameters:**
+- Chunk size: 500
+- Chunk overlap: 100
+(not really as I did not played with it yet)
+
+
+### For Podcast Transcripts
+
+**Recommended Strategy:** Recursive Character Chunking
+
+**Reasoning:**
+- Better preserves conversational flow and sentence boundaries.
+- Reduces the chance of splitting ideas in the middle.
+- Produces more coherent chunks for downstream retrieval.
+
+**Recommended parameters:**
+- Chunk size: 500
+- Chunk overlap: 100
+(not really as I did not played with it yet)
+
+
+## Trade-offs Summary
+
+| Strategy | Pros | Cons | Best For |
+|-----------|------|------|----------|
+| Fixed Character | Simple, fast, predictable | Can split sentences or paragraphs | Simple or uniformly structured text |
+| Recursive Character | Preserves natural document structure | Slightly more complex configuration | PDFs, articles, transcripts |
+| Token-Based | Controls LLM context size accurately | Ignores semantic boundaries | LLM applications with token limits |
+| Semantic | Preserves meaning between chunks | Computationally expensive and requires embeddings | High-quality RAG and semantic search |
+
+
+## Overall Conclusion
+
+Recursive character chunking provided the best balance between chunk size consistency and preservation of document structure. Token-based chunking is valuable when working with LLM context windows, while fixed-size chunking is useful for simple baselines because it is easy to implement and computationally efficient.
+
+________________________________________________________________
+
+
+
+
+Recursive chunking generally preserves context better because it tries to split at meaningful boundaries such as paragraphs and sentences before falling back to smaller units. Fixed-size chunking is simpler but can break sentences or semantic units, while token-based chunking is useful for controlling LLM context size but does not prioritize natural language boundaries.
+
+The podcast transcript benefits most from recursive chunking because it is conversational and has long continuous text. The PDF shows less improvement because PDF extraction already disrupts formatting and section boundaries, limiting how well any text splitter can preserve the original structure.
+
+
+Podcast
+=======
+Strategy    Avg       Min       Max       Chunks    Ends %
+Fixed       491.0     217       500       43        11.6
+Recursive   453.3     363       500       43        2.3
+Token       2307.7    2187      2468      9         11.1
+
+PDF
+===
+Strategy    Avg       Min       Max       Chunks    Ends %
+Fixed       488.5     160       500       56        1.8
+Recursive   477.7     405       499       55        5.5
+Token       1953.1    1736      2169      14        0.0
+
+
+
+_____________________________________________________________
+
 
 LAB9_Slice-docs/
 │
