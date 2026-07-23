@@ -1,48 +1,54 @@
 
-1. creating chunks after hours:
-Fixed-size character chunking with newline separators performed poorly on the podcast transcript because the Whisper output was a continuous text block without paragraph boundaries. The splitter returned the entire transcript as one chunk instead of respecting the target size.
--> sing spaces as separators allowed the splitter to create smaller chunks, but this risks cutting sentences and semantic units. Recursive chunking is expected to handle podcast transcripts better.
+1. created chunks after hours. swiching from notebook to .py, and the restructuring completely. deleted all evidences, new will come
 
-PDF - fixed-size chunking cuts through sentences -> try RecursiveCharacterTextSplitter
-_______________________________
-Does fixed-size chunking break sentences in the middle?
-Yes, fixed-size chunking often breaks sentences because it splits based on character count rather than meaning or sentence structure.
-How does it handle paragraph boundaries?
-It only respects paragraph boundaries if the chosen separator exists; otherwise, it may split text arbitrarily across paragraphs.
-Which content type handles fixed-size chunking better?
-The PDF handled fixed-size chunking slightly better because it had more natural text boundaries, while the podcast transcript was a continuous conversational text with fewer structural markers.
+LAB9_Slice-docs/
+│
+├── config.py.  
+├── transcription.py
+├── transcribe_audio.py
+├── pdf_loader.py
+├── transcript_loader.py
+├── chunking.py
+├── evaluation.py
+├── run_fixed_chunking.py
+├── run_recursive_chunking.py
+├── run_token_chunking.py
+├── compare_chunking.py
+│
+├── data/
+├── transcripts/
+├── outputs/
+│
+├── chunking_strategies.ipynb
+├── requirements.txt
+├── .env
+├── .gitignore
+└── lab_proof.md
 
+python run_token_chunking.py
 
-python chunking_experiment.py
-/Users/nevena/Ironhack_Labs/week3/LAB9_Slice-docs/chunking_experiment.py:11: DeprecationWarning: `langchain-community` is being sunset and is no longer actively maintained. See https://github.com/langchain-ai/langchain-community/issues/674 for details and migration guidance toward standalone integration packages.
-  from langchain_community.document_loaders import PyPDFLoader
-Loaded documents
-================
-Podcast characters: 17073
-PDF characters: 22100
+Podcast token chunks
+--------------------
+Number of chunks: 25
+Average size: 906.9 characters
+Smallest chunk: 263 characters
+Largest chunk: 1012 characters
 
-Podcast chunks
---------------
-Number of chunks: 85
-Average size: 296.4 characters
-Smallest chunk: 288 characters
-Largest chunk: 300 characters
-
-PDF chunks
-----------
-Number of chunks: 56
-Average size: 472.9 characters
-Smallest chunk: 153 characters
-Largest chunk: 499 characters
+PDF token chunks
+----------------
+Number of chunks: 23
+Average size: 1147.4 characters
+Smallest chunk: 553 characters
+Largest chunk: 1359 characters
 
 Sentence boundary check
 ======================
-Podcast clean endings: 8.2%
-PDF clean endings: 8.9%
+Podcast clean endings: 12.0%
+PDF clean endings: 0.0%
 
 First podcast chunk
 ==================
-Welcome back to the Deep Dive. Today, we aren't just reading the news. We are looking at, well, the rulebook for the next century of human history. That sounds a little hyperbolic. I know it sounds hyperbolic, but looking at this stack of documents, I really don't think it is. We are tackling
+Welcome back to the Deep Dive. Today, we aren't just reading the news. We are looking at, well, the rulebook for the next century of human history. That sounds a little hyperbolic. I know it sounds hyperbolic, but looking at this stack of documents, I really don't think it is. We are tackling Regulation EU 2024 1689. Or as your friends in the tech industry probably call it, with a mix of fear and respect, the AI Act. Right, the AI Act. Yeah. It's huge, it's dense, and it is officially the world's first comprehensive legal framework for artificial intelligence. But here's my worry right off the bat. When we talk about regulation, people tend to picture, you know, dusty binders and bureaucrats stamping forms. Sure. But this is about whether a robot can decide if you go to jail, or if you get that loan for your house, or if your boss can track your facial expressions
 
 First PDF chunk
 ================
@@ -63,22 +69,24 @@ SHS/2023/PI/H/1
  
 All rights reserved.
 This publication is available in Open Access under the Attribution-
-NonCommercial-ShareAlike 3.0 IGO (CC-BY-NC-SA 3.0 IGO) license
+NonCommercial-ShareAlike 3.0 IGO (CC-BY-NC-SA 3.0 IGO) license 
+(http://creativecommons.org/licenses/by-nc-sa/3.0/igo/). By using 
+the content of this publication, the users accept to be bound by the 
+terms of use of the UNESCO Open Access Repository (www.unesco.
+org/open-access/terms-use-ccbyncsa-en).
+Cover photo: metamorworks / Shutterstock.com
+Graphic design (Cover & Layout): Sara Rienda de la Mota 
+Printed by UNESCO 
+Printed in France
+32
+Table of Contents
+08
+2A Human Rights Approach to AI· Ten core principles lay out a Human Rights-centred 
+Approach to the Ethics of AI
+·
+Message from Gabri
 
-Chunk endings inspection
-=======================
-
-Podcast last characters:
-unds hyperbolic, but looking at this stack of documents, I really don't think it is. We are tackling
-
-PDF last characters:
-in Open Access under the Attribution-
-NonCommercial-ShareAlike 3.0 IGO (CC-BY-NC-SA 3.0 IGO) license
-
-
-
-
-
+___________________________________________________________________
 not a proof, saving it for my own overview
 audio file is too large for the Whisper API upload limit
 

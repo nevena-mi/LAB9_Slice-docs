@@ -1,11 +1,7 @@
 .env
 
-385082eng.pdf
-ai_hleg_ethics_guidelines_for_trustworthy_ai-en_87F84A41-A6E8-F38C-BFF661481B40077B_60419.pdf
-Red_Lines_and_Risks_in_the_AI_Act.m4a
-The_Blueprint_For_Trustworthy_AI.m4a
-
 *.pdf
 *.m4a
 
-__pycache__
+__pycache__/
+*.pyc
